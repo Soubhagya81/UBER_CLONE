@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.6",
+    "express": "^4.21.1"
+  },
+  "name": "backend_user_clone",
+  "version": "1.0.0",
+  "description": "creating the project where we try to clone uber",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "author": "soubhagya",
+  "license": "ISC"
+}
