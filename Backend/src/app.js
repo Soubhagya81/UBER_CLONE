@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.send('hello world')
 } )
-app.use('/users', userRoutes)
+app.use('/api/v1/users', userRoutes)
 
 
 export default app

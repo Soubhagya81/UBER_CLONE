@@ -3,61 +3,61 @@ import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-    fullName: {
-        firstName: {
+    fullname: {
+        firstname: {
             type: String,
             required: true,
         },
-        lastNmae: {
+        lastname: {
             type: String,
             required: true,
         }
     },
     email: {
         type: String,
-        require: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
-        require: true,
-        select: false
+        required: true,
+        select: false // this is because password will not come with select query
     },
     socketId: {
         type: String,
     }
-})
+});
 
+// Generate Access Token
 userSchema.methods.generateAccessToken = function () {
     return jsonwebtoken.sign({
         _id: this.id,
-        fullName: this.fullName
-    }, process.env.SECRET_KEY,
-        {
-            expiresIn: process.env.TOKEN_EXPIRE_IN_SEC
-        })
-}
+        fullname: this.fullname
+    }, process.env.ACCESS_TOKEN, {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRE
+    });
+};
 
-userSchema.methods.generateRefressToken = function () {
-    return jwt.sign({
-        _id : this.id,
-        fullName : this.fullName
-      },
-        process.env.REFRESS_TOKEN_SECRET,
-        {
-            expiresIn : process.env.REFRESS_TOKEN_EXPIRY
-        }
-      )
-}
+// Generate Refresh Token
+userSchema.methods.generateRefreshToken = function () {
+    return jsonwebtoken.sign({
+        _id: this.id,
+        fullname: this.fullname
+    }, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+    });
+};
 
-userSchema.method.comparePassword = async function () {
-    return await bcrypt.compare(password, this.password)
-}
+// Compare Password
+userSchema.methods.comparePassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+};
 
-userSchema.pre('save', async function () {
+// Pre-save middleware for password hashing
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
-    this.password =  bcrypt.hash(thihs.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
-})
+});
 
-
-export const User = mongoose.model("User", userSchema)
+export const User = mongoose.model("User", userSchema);
