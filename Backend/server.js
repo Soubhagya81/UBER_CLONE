@@ -7,7 +7,7 @@ config()
 const environment = process.env.APP_PORT || 3000;
 
 
-connectToDb()
+connectToDb().then()
 app.listen(environment, () => {
     console.log(`App is running at ${environment} port`);
     

@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.generateAccessToken = function () {
     return jsonwebtoken.sign({
         _id: this.id,
-        fullname: this.fullname
+        fullname: this.email
     }, process.env.ACCESS_TOKEN, {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRE
     });
@@ -48,12 +48,11 @@ userSchema.methods.generateRefreshToken = function () {
     });
 };
 
-// Compare Password
+
 userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
-// Pre-save middleware for password hashing
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 10);
